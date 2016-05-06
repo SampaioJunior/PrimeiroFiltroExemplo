@@ -7,9 +7,13 @@
     <filter>
         <filter-name>Filtro Basico</filter-name>
         <filter-class>filtro.FiltroBasico</filter-class>
+        <filter-name>Filtro Logado</filter-name>
+        <filter-class>filtro.LoginFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>Filtro Basico</filter-name>
         <servlet-name>ServletFiltrado</servlet-name>
+        <filter-name>Filtro Logado</filter-name>
+        <servlet-name>LoginInicio</servlet-name>
     </filter-mapping>
 </web-app>
