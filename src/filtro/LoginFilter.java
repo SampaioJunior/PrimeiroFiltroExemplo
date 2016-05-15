@@ -1,5 +1,9 @@
 package filtro;
 
+import dao.LoginDAO;
+import model.Login;
+import sun.rmi.runtime.Log;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -7,6 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 @WebFilter("/*")
 public class LoginFilter implements Filter {
@@ -18,28 +26,30 @@ public class LoginFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         System.out.println("[INFO]: Executing Filter...");
 
-        HttpServletRequest requestHttp = (HttpServletRequest) request ;
-        HttpServletResponse responseHttp = (HttpServletResponse) response ;
+        HttpServletRequest requestHttp = (HttpServletRequest) request;
+        HttpServletResponse responseHttp = (HttpServletResponse) response;
         HttpSession session = requestHttp.getSession(false);
 
         String url = requestHttp.getRequestURI();
         String method = requestHttp.getMethod();
 
-        if(url.equalsIgnoreCase("/LoginSession") && method.equalsIgnoreCase("post")){
+
+        if (url.equalsIgnoreCase("/LoginServlet") && method.equalsIgnoreCase("post")) {
             chain.doFilter(request, response);
-        }else{
-            if(session==null){
+        } else {
+            if (session == null) {
                 sendLoginForm(responseHttp, false);
-            }else{
+            } else {
                 String result = (String) session.getAttribute("usuarioLogado");
-                if(result.equals("OK")){
+                if (result.equals("OK")) {
                     chain.doFilter(request, response);
-                }else{
+                } else {
                     sendLoginForm(responseHttp, false);
                 }
 
             }
         }
+
 
     }
 
@@ -57,7 +67,7 @@ public class LoginFilter implements Filter {
         out.println("<body>");
         out.println("<h1> Login Form</h1>");
 
-        if(withErrorMessage)
+        if (withErrorMessage)
             out.println("<h2 style='color: red'>Login Failed. Please try again. <br></h2>");
 
         out.println("<form method='post' action='LoginSession'>");
